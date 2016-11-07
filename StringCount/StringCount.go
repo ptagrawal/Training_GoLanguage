@@ -1,7 +1,6 @@
 package main
 
 import (
-	// freqCount "Training_GoLanguage/StringCount/freqCount"
 	getMap "Training_GoLanguage/StringCount/generateMap"
 	"bufio"
 	"fmt"
