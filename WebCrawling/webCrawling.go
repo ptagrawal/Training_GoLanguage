@@ -9,28 +9,28 @@ import (
 )
 
 var (
-	langMap = make(map[string]webcrawler.Lang)
+	langs = make([]webcrawler.Lang, 0)
 )
 
 func main() {
-	langMap["Python"] = webcrawler.Lang{
+	langs = append(langs, webcrawler.Lang{
 		Name: "Python",
 		URL:  "https://www.python.org/",
-	}
+	})
 
-	langMap["Ruby"] = webcrawler.Lang{
+	langs = append(langs, webcrawler.Lang{
 		Name: "Ruby",
 		URL:  "https://www.ruby-lang.org/en/",
-	}
+	})
 
-	langMap["Golang"] = webcrawler.Lang{
+	langs = append(langs, webcrawler.Lang{
 		Name: "GoLang",
 		URL:  "https://golang.org/",
-	}
+	})
 
 	var wg sync.WaitGroup
 	start := time.Now()
-	for _, lang := range langMap {
+	for _, lang := range langs {
 		wg.Add(1)
 		go webcrawler.Crawl(printLang, lang, &wg)
 	}
