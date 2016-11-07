@@ -5,6 +5,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"sync"
 	"time"
 )
 
@@ -15,7 +16,8 @@ type Lang struct {
 	Time  string
 }
 
-func Crawl(pfunc func(Lang), lang Lang) {
+func Crawl(pfunc func(Lang), lang Lang, wg *sync.WaitGroup) {
+	defer wg.Done()
 	start := time.Now()
 	err := getPage(&lang)
 	if err != nil {
