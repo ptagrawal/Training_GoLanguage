@@ -1,7 +1,7 @@
 package main
 
 import (
-	freqCount "GoLang_Training/IntegerCount/freqCount"
+	freqCount "Training_GoLanguage/IntegerCount/freqCount"
 	"bufio"
 	"fmt"
 	"os"
