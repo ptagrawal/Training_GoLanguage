@@ -1,4 +1,4 @@
-package freqCount
+package validateInput
 
 import (
 	"fmt"
