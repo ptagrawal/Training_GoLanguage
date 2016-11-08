@@ -8,11 +8,9 @@ import (
 	"time"
 )
 
-var (
-	langs = make([]webcrawler.Lang, 0)
-)
+func makeLangsList() []webcrawler.Lang {
+	langs := make([]webcrawler.Lang, 0)
 
-func main() {
 	langs = append(langs, webcrawler.Lang{
 		Name: "Python",
 		URL:  "https://www.python.org/",
@@ -28,16 +26,46 @@ func main() {
 		URL:  "https://golang.org/",
 	})
 
+	return langs
+}
+
+func main() {
+	var count int64
+	langs := makeLangsList()
+
+	dataChannel := make(chan byte)
+	doneChannel := make(chan bool)
+
+	go listenAndCount(dataChannel, doneChannel, &count)
+	// go listenAndCount(dataChannel, &count)
+
 	var wg sync.WaitGroup
 	start := time.Now()
 	for _, lang := range langs {
 		wg.Add(1)
-		go webcrawler.Crawl(printLang, lang, &wg)
+		go webcrawler.Crawl(printLang, lang, &wg, dataChannel)
 	}
-	elapsed := time.Since(start)
 	wg.Wait()
+	doneChannel <- true
+	<-doneChannel
+	elapsed := time.Since(start)
+
+	fmt.Printf("Total number of bytes crawled from the %d websites : %d\n", len(langs), count)
 
 	fmt.Printf("Total Time taken Crawling the three websites : " + elapsed.String() + "\n\n")
+}
+
+func listenAndCount(dataCh chan byte, doneCh chan bool, count *int64) {
+	// func listenAndCount(dataCh chan byte, count *int64) {
+	for {
+		select {
+		case <-doneCh:
+			doneCh <- true
+			return
+		case <-dataCh:
+			*count++
+		}
+	}
 }
 
 func printLang(lang webcrawler.Lang) {
